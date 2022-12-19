@@ -6,6 +6,7 @@ public class Manager {
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subTasks = new HashMap<>();
     protected int nextId = 1;
+    String field =  "---------------------------------";
 
     public int addTask(Task task) { //добавление задач
         task.setId(nextId++);
@@ -32,34 +33,30 @@ public class Manager {
     }
 
     public String printAllTask() { // печатает все задачи
-        String a = "---------------------------------";
         for (Integer task : tasks.keySet()) {
             System.out.println(printTask(task));
-            System.out.println(a);
+            System.out.println(field);
         }
         return null;
     }
 
     public String printAllEpic() { // печатает все эпики
-        String a = "---------------------------------";
-
         for (Integer epicx : epics.keySet()) {
             System.out.println(printEpic(epicx));
-            System.out.println(a);
+            System.out.println(field);
         }
         return null;
     }
 
 
     public String printAllSubTaskForEpic(int epicId) { //печатает подзадачи определенного эпика
-        String a = "---------------------------------";
         System.out.println(printEpic(epicId));
         Epic epic = epics.get(epicId); //определенный эпик
         if (!epic.getSubTaskId().isEmpty()) {
             for (Integer subTaskId : epic.getSubTaskId()) {
                 if (epic.getSubTaskId().contains(subTaskId)) {
                     System.out.println(printSubTask(subTaskId));
-                    System.out.println(a);
+                    System.out.println(field);
                 } else {
                     System.out.println("В данном EPIC нет подзадач.");
                 }
@@ -71,10 +68,9 @@ public class Manager {
 
 
     public String printAllSubTask() { // печатает все подзадачи
-        String a = "---------------------------------";
         for (Integer sub : subTasks.keySet()) {
             System.out.println(printSubTask(sub));
-            System.out.println(a);
+            System.out.println(field);
         }
         return null;
     }
