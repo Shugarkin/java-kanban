@@ -1,3 +1,7 @@
+package model;
+
+import model.Tasks;
+
 public class SubTask extends Tasks {
 
 
@@ -16,5 +20,15 @@ public class SubTask extends Tasks {
 
     public int getEpicId() {
         return epicId;
+    }
+
+    @Override
+    public String toString() {
+        return  "\n" + "SubTask{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

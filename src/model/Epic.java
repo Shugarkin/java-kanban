@@ -1,3 +1,7 @@
+package model;
+
+import model.Tasks;
+
 import java.util.ArrayList;
 
 public class Epic extends Tasks {
@@ -23,4 +27,13 @@ public class Epic extends Tasks {
         this.subTaskIds = subTaskIds;
     }
 
+    @Override
+    public String toString() {
+        return "\n" +  "Epic{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
