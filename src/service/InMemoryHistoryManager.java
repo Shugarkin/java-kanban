@@ -9,7 +9,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
 
 
-    ArrayList<Tasks> historyList = new ArrayList<>();
+    public ArrayList<Tasks> historyList = new ArrayList<>();
 
 
 

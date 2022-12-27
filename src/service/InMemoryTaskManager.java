@@ -6,15 +6,9 @@ import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
 
-    HistoryManager historyManager = Managers.getDefaultHistory();
-
-
-    @Override
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
 
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
@@ -226,15 +220,3 @@ public class InMemoryTaskManager implements TaskManager {
 
 }
 
-/*@Override
-    public void getHistory() { //метод для просмотра последних задач
-        System.out.println("10 последних просмотренных задач:");
-        for (int i = 0; i < historyList.size(); i++) {
-            System.out.println(printHistory(historyList.get(i).getId()));
-        }
-    }
-    @Override
-    public String printHistory(int i) { //метод для печати истории
-            return "Задача: {" + historyList.get(i).getTitle() + "}";
-    }
-    */

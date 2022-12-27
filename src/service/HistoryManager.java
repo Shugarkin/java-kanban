@@ -8,8 +8,6 @@ public interface HistoryManager {
     void add(Tasks task);
 
     ArrayList<Tasks> getHistory();
-    @Override
-    String toString();
 
 }
 
