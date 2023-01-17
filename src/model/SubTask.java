@@ -4,7 +4,6 @@ import model.Tasks;
 
 public class SubTask extends Tasks {
 
-
     protected int epicId;
 
     public SubTask(int id, String title, String description, String status, int epicId) {

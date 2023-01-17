@@ -7,9 +7,6 @@ import java.util.HashMap;
 public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-
-
-
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, SubTask> subTasks = new HashMap<>();
@@ -159,22 +156,28 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskForId(int id) {//удаляет задачу по id
         tasks.remove(id);
+        historyManager.remove(id);
     }
     @Override
     public void deleteEpicForId(int id) {//удаляет эпик по id
         Epic epic = epics.get(id);
         if (!epic.getSubTaskId().isEmpty()) {
             for (Integer subTaskId : epic.getSubTaskId()) {
-                if (!epic.getSubTaskId().contains(subTaskId)) {
+                if (epic.getSubTaskId().contains(subTaskId)) {
                     subTasks.remove(subTaskId);
+                    if(historyManager.getHistoryMap().containsKey(subTaskId)) {
+                        historyManager.getHistoryList().remove(subTaskId);
+                    }
                 }
             }
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
     @Override
     public void deleteSubTaskForId(int id) {//удаляет подзадачу по id
         subTasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -219,4 +222,3 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 }
-
