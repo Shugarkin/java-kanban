@@ -20,7 +20,7 @@ public class Main {
 
         taskManager.addEpic(new Epic("Приборка дома", "Как бы грязно уже"));
 
-
+        taskManager.deleteTask();
         System.out.println(taskManager.printTask(1));
         System.out.println(taskManager.printTask(2));
         System.out.println(taskManager.printEpic(3));

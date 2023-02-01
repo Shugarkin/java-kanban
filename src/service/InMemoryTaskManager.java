@@ -16,28 +16,27 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public int addTask(Task task) { //добавление задач
+    public void addTask(Task task) { //добавление задач
         task.setId(nextId++);
         tasks.put(task.getId(), task);
-        return task.getId();
-    }
-    @Override
-    public int addEpic(Epic epic) { //добаление эпиков
-        epic.setId(nextId++);
-        epics.put(epic.getId(), epic);
-        epic.setStatus(String.valueOf(Status.NEW));
-        return epic.getId();
 
     }
     @Override
-    public int addSubTask(SubTask subTask) { //добавление сабзадач
+    public void addEpic(Epic epic) { //добаление эпиков
+        epic.setId(nextId++);
+        epics.put(epic.getId(), epic);
+        epic.setStatus(String.valueOf(Status.NEW));
+
+
+    }
+    @Override
+    public void addSubTask(SubTask subTask) { //добавление сабзадач
 
         subTask.setId(nextId++);
         subTasks.put(subTask.getId(), subTask);
         int epicId = subTask.getEpicId();
         epics.get(epicId).addSubTaskId(subTask.getId());
         checkStatus(epicId);
-        return subTask.getId();
     }
     @Override
     public String printAllTask() { // печатает все задачи
@@ -45,7 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println(tasks.get(task));
             System.out.println(field);
         }
-        return null;
+        return "";
     }
     @Override
     public String printAllEpic() { // печатает все эпики
@@ -53,7 +52,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println(epics.get(epicx));
             System.out.println(field);
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -71,7 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
 
             }
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -122,35 +121,32 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int newTask(int id, Task task) {//заменяет старую задачу новой
+    public void newTask(int id, Task task) {//заменяет старую задачу новой
         if (tasks.containsKey(id)) {
             task.setId(id);
             tasks.put(task.getId(), task);
-            return task.getId();
         } else {
-            return 0;
+            System.out.println("Что-то пошло не так ((");
         }
     }
     @Override
-    public int newEpic(int id, Epic epic) {//заменяет старый эпик новым
+    public void newEpic(int id, Epic epic) {//заменяет старый эпик новым
         if (epics.containsKey(id)) {
             epic.setId(id);
             epics.put(epic.getId(), epic);
-            return epic.getId();
         } else {
-            return 0;
+            System.out.println("Что-то пошло не так ((");
         }
     }
     @Override
-    public int newSubTask(int id, SubTask subTask) {//заменяет старую подзадачу новой
+    public void newSubTask(int id, SubTask subTask) {//заменяет старую подзадачу новой
         if (subTasks.containsKey(id)) {
             subTask.setId(id);
             subTasks.put(subTask.getId(), subTask);
             int epicId = subTask.getEpicId();
             epics.get(epicId).addSubTaskId(subTask.getId());
-            return subTask.getId();
         } else {
-            return 0;
+            System.out.println("Что-то пошло не так ((");
         }
     }
     @Override

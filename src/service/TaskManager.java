@@ -4,17 +4,15 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
-import java.util.HashMap;
-
 public interface TaskManager {
     HistoryManager getHistoryManager();
 
 
-    int addTask(Task task);
+    void addTask(Task task);
 
-    int addEpic(Epic epic);
+    void addEpic(Epic epic);
 
-    int addSubTask(SubTask subTask);
+    void addSubTask(SubTask subTask);
 
     String printAllTask();
 
@@ -36,11 +34,11 @@ public interface TaskManager {
 
     void deleteSubTask();
 
-    int newTask(int id, Task task);
+    void newTask(int id, Task task);
 
-    int newEpic(int id, Epic epic);
+    void newEpic(int id, Epic epic);
 
-    int newSubTask(int id, SubTask subTask);
+    void newSubTask(int id, SubTask subTask);
 
     void deleteTaskForId(int id);
 

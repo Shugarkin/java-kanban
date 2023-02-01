@@ -95,27 +95,30 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         public T removeNode(Node<T> node) { //метод удаления Node из кастомного списка
-            final T data = node.data;
-            final Node<T> next = node.next;
-            final Node<T> prev = node.prev;
+            if(node != null) {
+                final T data = node.data;
+                final Node<T> next = node.next;
+                final Node<T> prev = node.prev;
 
-            if (prev == null) {
-                head = next;
-            } else {
-                prev.next = next;
-                node.prev = null;
+                if (prev == null) {
+                    head = next;
+                } else {
+                    prev.next = next;
+                    node.prev = null;
+                }
+
+                if (next == null) {
+                    tail = prev;
+                } else {
+                    next.prev = prev;
+                    node.next = null;
+                }
+
+                node.data = null;
+                size--;
+                return data;
             }
-
-            if (next == null) {
-                tail = prev;
-            } else {
-                next.prev = prev;
-                node.next = null;
-            }
-
-            node.data = null;
-            size--;
-            return data;
+            return null;
         }
 
         public T remove(int id) { //метод через который удаляется значение из листа
