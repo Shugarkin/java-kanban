@@ -1,0 +1,6 @@
+id,type,name,status,description,start,finish,epic
+
+1,Task,Задача,NEW,Для проверки,2023-01-01T12:00,PT30M
+2,Epic,Эпик,NEW,Для проверки,null,null
+
+2,
