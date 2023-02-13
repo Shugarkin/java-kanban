@@ -6,6 +6,9 @@ import model.Task;
 import model.Tasks;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,18 +23,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         File file = new File("QWE.csv");
-//        TaskManager taskManager = new FileBackedTasksManager(file);
 
         TaskManager taskManager = new FileBackedTasksManager(file);
 
-        taskManager.addTask(new Task("Наладить личную жизнь", "Tinder в помощь", "IN_PROGRESS"));
-        taskManager.addTask(new Task("Забыть бывшую", "Макс Корж ты где?", "IN_PROGRESS"));
+        taskManager.addTask(new Task("Наладить личную жизнь", "Tinder в помощь", "IN_PROGRESS",
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), Duration.ofMinutes(30)));
+        taskManager.addTask(new Task("Забыть бывшую", "Макс Корж ты где?", "IN_PROGRESS",
+                LocalDateTime.of(2023, Month.OCTOBER,01,11,00), Duration.ofMinutes(60)));
 
         taskManager.addEpic(new Epic("Прогулка", "Прогулка по парку"));
 
-        taskManager.addSubTask(new SubTask("Одеться", "Как без одежды то", "NEW", 3));
-        taskManager.addSubTask(new SubTask("Выйти на улицу", "Дома же не погуляешь", "DONE", 3));
-        taskManager.addSubTask(new SubTask("Я все таки смог", "Решить этот спринт", "DONE", 3));
+        taskManager.addSubTask(new SubTask("Одеться", "Как без одежды то", "NEW",
+                LocalDateTime.of(2022, Month.JANUARY, 01, 12, 00), Duration.ofMinutes(60),3));
+        taskManager.addSubTask(new SubTask("Выйти на улицу", "Дома же не погуляешь", "DONE",
+                LocalDateTime.of(2022, Month.MARCH, 01, 13, 00), Duration.ofMinutes(60),3));
+        taskManager.addSubTask(new SubTask("Я все таки смог", "Решить этот спринт", "DONE",
+                LocalDateTime.of(2022, Month.NOVEMBER, 01, 14, 00), Duration.ofMinutes(60),3));
 
         taskManager.addEpic(new Epic("Приборка дома", "Как бы грязно уже"));
 
@@ -57,6 +64,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
+    public List<String> getSaveList() {
+        return saveList;
+    }
+
     List<String> saveList = new ArrayList<>(); //для задач и истории
     List<String> saveListTask = new ArrayList<>(); //лист для тасков
 
@@ -65,7 +76,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() { //метод для добавления списка задач и истории в файл
         saveAllList();
-        if (!saveList.isEmpty()) {
             try (Writer fileWriter = new FileWriter(file)) {
                 for (String s : saveList) {
                     fileWriter.write(s);
@@ -73,72 +83,45 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             } catch (IOException e) {
                 throw new ManagerSaveException("Что-то пошло не так");
             }
-        } else {
-            saveList.clear();
-            try (Writer fileWriter = new FileWriter("TW 6")) {
-                for (String s : saveList) {
-                    fileWriter.write(s); // здесь над о подумать
-                }
-            } catch (IOException e) {
-                throw new ManagerSaveException("Что-то пошло не так");
-            }
         }
-    }
+
 
     public String toString(Tasks taskForString) { //метод для перевода таска в строку
         if (tasks.containsKey(taskForString.getId())) {
             String a = String.valueOf(tasks.get(taskForString.getId()));
-            String b = translationTasks(a);
-            return b;
+            return a;
         } else if (epics.containsKey(taskForString.getId())) {
             String a = String.valueOf(epics.get(taskForString.getId()));
-            String b = translationTasks(a);
-            return b;
+            return a;
         } else if (subTasks.containsKey(taskForString.getId())) {
             String a = String.valueOf(subTasks.get(taskForString.getId()));
-            String b = translationTasks(a);
-            return b;
+            return a;
         } else {
             return "Что-то пошло не так((";
         }
     }
 
-    public String translationTasks(String stringTask) { //метод для разбивки строки по условию задания
-        String id = stringTask.substring(stringTask.indexOf("id=") + 3, stringTask.indexOf(", title='"));
-        String title = stringTask.substring(stringTask.indexOf("title='") + 7, stringTask.indexOf("', description"));
-        String description = stringTask.substring(stringTask.indexOf("description='") + 13, stringTask.indexOf(", status") - 1);
-        String tasksName = stringTask.substring(stringTask.indexOf(0) + 2, stringTask.indexOf("{i"));
-        if (stringTask.contains("epicId")) {
-            String status1 = stringTask.substring(stringTask.indexOf("status='") + 8, stringTask.indexOf("', epicId"));
-            String epicId = stringTask.substring(stringTask.indexOf("epicId='") + 8, stringTask.indexOf("'}"));
-            String all1 = id + "," + tasksName + "," + title + "," + status1 + "," + description + "," + epicId + "\n";
-            return all1;
-        } else {
-            String status = stringTask.substring(stringTask.indexOf("status='") + 8, stringTask.indexOf("'}"));
-            String all = id + "," + tasksName + "," + title + "," + status + "," + description + "\n";
-            return all;
-        }
-    }
-
     static String historyToString(HistoryManager manager) { //метод для записи айди задачи из истории в лист
+
         String superA = "";
-        if (historyList.isEmpty()) {
+
+        if(historyList.isEmpty()) {
             historyList.add(manager.getHistory().toString());
             for (String s : historyList) {
-                String id = s.substring(s.indexOf("id=") + 3, s.indexOf(", title='"));
-                superA += id + ",";
-            }
+                String[] mass = s.split(",");
+                String a = String.valueOf(mass[0].charAt(2));
+                superA += a + ",";
+        }
         } else {
             historyList.clear();
             historyList.add(manager.getHistory().toString());
             for (String s : historyList) {
-                String[] mass = s.split("}");
-                int a = mass.length;
-                mass[a - 1] = null;
-                for (String mass1 : mass) {
-                    if (mass1 != null) {
-                        String id = mass1.substring(mass1.indexOf("id=") + 3, mass1.indexOf(", title='"));
-                        superA += id + ",";
+                String[] mass = s.split("\n");
+                mass[0] = null;
+                for (String s1 : mass) {
+                    if( s1 != null) {
+                        String a = String.valueOf(s1.charAt(0));
+                        superA += a + ",";
                     }
                 }
             }
@@ -155,21 +138,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void saveAllList() { // метод для обьединения листов с задачами и истории в один
         if (saveList.isEmpty()) {
-            saveList.add("id,type,name,status,description,epic\n");
+            saveList.add("id,type,name,status,description,start,finish,epic\n");
             for (String s : saveListTask) {
                 saveList.add(s);
             }
-            saveList.add("\n");
+            saveList.add("\n\n");
             for (String s : historyList) {
                 saveList.add(s);
             }
         } else {
             saveList.clear();
-            saveList.add("id,type,name,status,description,epic\n");
+            saveList.add("id,type,name,status,description,start,finish,epic\n");
             for (String s : saveListTask) {
                 saveList.add(s);
             }
-            saveList.add("\n");
+            saveList.add("\n\n");
             for (String s : historyList) {
                 saveList.add(s);
             }
@@ -220,7 +203,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    protected void listToTask() { //метод для создания задач
+    protected void listToTask(){ //метод для создания задач
         fileForTask(file);
         for (String s : readList) {
             fromString(s);
@@ -230,34 +213,47 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     public Tasks fromString(String value) { //метод для создания задачи из строки
-        Tasks task = null;
+        Tasks task;
         String[] split = value.split(",");
-        if (split.length == 5) {
             int id = Integer.parseInt(split[0]);
             String title = split[2];
             String description = split[4];
             String status = split[3];
             String name = split[1];
+            String startString = split[5];
+            LocalDateTime start;
+            if(startString.equals("null")){
+                start = null;
+            } else {
+                start = LocalDateTime.parse(startString);
+            }
             if(name.equals("Epic")) {
-                task = new Epic(id, title, description, status);
+                String finishString = split[6];
+                LocalDateTime finish;
+                if(finishString.equals("null")){
+                    finish = null;
+                } else {
+                    finish = LocalDateTime.parse(finishString);
+                }
+                task = new Epic(id, title, description, status, start, finish);
                 addEpic((Epic) task);
             } else if(name.equals("Task")) {
-                task = new Task(id, title, description, status);
+                String durationString = split[6];
+                Duration duration = Duration.parse(durationString);
+                task = new Task(id, title, description, status, start, duration);
                 addTask((Task) task);
+            } else {
+                String durationString = split[6];
+                Duration duration = Duration.parse(durationString);
+                int epicId = Integer.parseInt(split[7]);
+                task = new SubTask(id, title, description, status, start, duration, epicId);
+                addSubTask((SubTask) task);
             }
-        } else {
-            int id = Integer.parseInt(split[0]);
-            String title = split[2];
-            String description = split[4];
-            String status = split[3];
-            int epicId = Integer.parseInt(split[5]);
-            task = new SubTask(id, title, description, status, epicId);
-            addSubTask((SubTask) task);
-        }
         return task;
     }
 
     public void fileToHistory () { //метод берет из листа с истории файла и добавляяет в обычную
+        readListHistory.remove(0);
         readListHistory.remove(0);
         for (String s : readListHistory) {
             String[] split = s.split(",");
@@ -275,12 +271,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
         }
 
-        public void recovery () { //метод обьединяющий добавление задач и истории из файла
+        public void recovery()  { //метод обьединяющий добавление задач и истории из файла
             listToTask();
             fileToHistory();
         }
 
-    static FileBackedTasksManager  loadFromFile(File file) { //метод создает новый FileBackedTasksManager из файла
+    public static FileBackedTasksManager  loadFromFile(File file) { //метод создает новый FileBackedTasksManager из файла
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         fileBackedTasksManager.recovery();
         return fileBackedTasksManager;
@@ -289,7 +285,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     // ниже переопределенные методы
     @Override
-    public void addTask(Task task) { //добавление таска
+    public void addTask(Task task)  { //добавление таска
         super.addTask(task);
         addToTask();
         save();
@@ -399,18 +395,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
     class ManagerSaveException extends RuntimeException {
-        public ManagerSaveException() {
-        }
-
         public ManagerSaveException(final String message) {
             super(message);
         }
 
-        public ManagerSaveException(final String message, final Throwable cause) {
-            super(message, cause);
-        }
-
-        public ManagerSaveException(final Throwable cause) {
-            super(cause);
-        }
     }
