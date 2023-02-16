@@ -1,5 +1,3 @@
-package Test;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
@@ -88,17 +86,17 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    public void newTaskTest() {
-        super.newTaskTest();
+    public void updateTaskTest() {
+        super.updateTaskTest();
     }
 
     @Test
-    public void newEpicTest() {
-        super.newEpicTest();
+    public void updateEpicTest() {
+        super.updateEpicTest();
     }
 
     @Test
-    public void newSubtaskTest()  {
-        super.newSubtaskTest();
+    public void updateSubtaskTest()  {
+        super.updateSubtaskTest();
     }
 }

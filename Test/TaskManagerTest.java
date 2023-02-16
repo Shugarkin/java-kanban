@@ -1,12 +1,12 @@
-package Test;
-
 import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import service.TaskManager;
 
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +68,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     @Test
     void addTaskTest() { //тест для проверки метода создания таска
 
-        Task task = new Task("Задача", "Для проверки", "NEW");
+        Task task = new Task("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
         taskManager.addTask(task);
         final int taskId = task.getId();
 
@@ -78,12 +79,11 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         assertEquals(task, savedTask, "Задачи не совпадают.");
 
 
-        final Map<Integer, Task> tasks = taskManager.getTasks();
+        final List<Task> tasks = taskManager.getTasks();
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(1), "Задачи не совпадают.");
-        assertEquals(tasks.get(3), null, "Неверный идентификатором задачи");
+        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
 
         //проверка на пустой список
         taskManager.deleteTask();
@@ -105,12 +105,11 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         assertNotNull(savedEpic, "Задача не найдена.");
         assertEquals(epic, savedEpic, "Задачи не совпадают.");
 
-        final Map<Integer, Epic> epics = taskManager.getEpics();
+        final List<Epic> epics = taskManager.getEpics();
 
         assertNotNull(epics, "Задачи не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество задач.");
-        assertEquals(epic, epics.get(1), "Задачи не совпадают.");
-        assertEquals(epics.get(3), null, "Неверный идентификатором задачи");
+        assertEquals(epic, epics.get(0), "Задачи не совпадают.");
 
         //проверка на пустой список
         taskManager.deleteEpic();
@@ -124,7 +123,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     @Test
     void addSubTaskTest() { //метод для проверки добавления сабтаска
         Epic epic = new Epic("Эпик", "Для проверки");
-        SubTask subTask = new SubTask("Подзадача", "Для проверки", "NEW", 1);
+        SubTask subTask = new SubTask("Подзадача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTask);
 
@@ -139,12 +139,11 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         assertNotNull(savedSubtask, "Задача не найдена.");
         assertEquals(subTask, savedSubtask, "Задачи не совпадают.");
 
-        final Map<Integer, SubTask> subTasks = taskManager.getSubTasks();
+        final List<SubTask> subTasks = taskManager.getSubTasks();
 
         assertNotNull(subTasks, "Задачи не возвращаются.");
         assertEquals(1, subTasks.size(), "Неверное количество задач.");
-        assertEquals(subTask, subTasks.get(2), "Задачи не совпадают.");
-        assertEquals(subTasks.get(3), null, "Неверный идентификатором задачи");
+        assertEquals(subTask, subTasks.get(0), "Задачи не совпадают.");
 
         //проверка на пустой список эпиков
         taskManager.deleteEpic();
@@ -198,10 +197,11 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         );
         Assertions.assertEquals(e.getMessage(), "Список задач пуст");
 
-        Task task = new Task("Задача", "Для проверки", "NEW");
+        Task task = new Task("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
         taskManager.addTask(task);
 
-        Assertions.assertEquals(taskManager.printTask(1), task.toString());
+        Assertions.assertEquals(taskManager.printTask(1), task);
 
         NullPointerException ex = Assertions.assertThrows(
                 NullPointerException.class,
@@ -221,7 +221,7 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         Epic epic = new Epic("Эпик", "Для проверки");
         taskManager.addEpic(epic);
 
-        Assertions.assertEquals(taskManager.printEpic(1), epic.toString());
+        Assertions.assertEquals(taskManager.printEpic(1), epic);
 
         NullPointerException ex = Assertions.assertThrows(
                 NullPointerException.class,
@@ -239,10 +239,11 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         Assertions.assertEquals(e.getMessage(), "Список подзадач пуст");
 
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        SubTask subTask = new SubTask("Задача", "Для проверки", "NEW", 1);
+        SubTask subTask = new SubTask("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1);
         taskManager.addSubTask(subTask);
 
-        Assertions.assertEquals(taskManager.printSubTask(2), subTask.toString());
+        Assertions.assertEquals(taskManager.printSubTask(2), subTask);
 
         NullPointerException ex = Assertions.assertThrows(
                 NullPointerException.class,
@@ -253,7 +254,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
 
     @Test
     public void deleteTaskTest() {
-        taskManager.addTask(new Task("Задача", "Для проверки", "NEW"));
+        taskManager.addTask(new Task("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
         taskManager.deleteTask();
 
         NullPointerException e = Assertions.assertThrows(
@@ -278,7 +280,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     @Test
     public void deleteSubtaskTest() {
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", "NEW", 1));
+        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1));
         taskManager.deleteSubTask();
 
         NullPointerException e = Assertions.assertThrows(
@@ -296,7 +299,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         );
         Assertions.assertEquals(ex.getMessage(),"Задачи с таким id нет", "Задача не удаленна по id");
 
-        taskManager.addTask(new Task("Задача", "Для проверки", "NEW"));
+        taskManager.addTask(new Task("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
 
         NullPointerException exp = Assertions.assertThrows(
                 NullPointerException.class,
@@ -331,7 +335,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         Assertions.assertEquals(ex.getMessage(),"Задачи с таким id нет", "Задача не удаленна по id");
 
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", "NEW", 1));
+        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1));
 
         NullPointerException exp = Assertions.assertThrows(
                 NullPointerException.class,
@@ -342,10 +347,12 @@ abstract class TaskManagerTest<T extends TaskManager>  {
 
 
     @Test
-    public void newTaskTest(){
-        taskManager.addTask(new Task("Задача", "Для проверки", "NEW"));
-        Task task = new Task("Задача 2", "Для проверки", "NEW");
-        taskManager.newTask(1,task);
+    public void updateTaskTest(){
+        taskManager.addTask(new Task("Задача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
+        Task task = new Task(1,"Задача 2", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
+        taskManager.updateTask(task);
 
         final int taskId = task.getId();
         final Task savedTask = taskManager.getTask(taskId);
@@ -353,10 +360,10 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     }
 
     @Test
-    public void newEpicTest() {
+    public void updateEpicTest() {
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        Epic epic = new Epic("Эпик 2", "Для проверки");
-        taskManager.newEpic(1, epic);
+        Epic epic = new Epic(1, "Эпик 2", "Для проверки");
+        taskManager.updateEpic(epic);
 
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.getEpic(epicId);
@@ -364,17 +371,16 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     }
 
     @Test
-    public void newSubtaskTest(){
+    public void updateSubtaskTest(){
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", "NEW", 1));
-        SubTask subTask1 = new SubTask("Подзадача 2", "Для проверки", "NEW", 1);
-        taskManager.newSubTask(2,subTask1);
+        taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1));
+        SubTask subTask1 = new SubTask(2,"Подзадача 2", "Для проверки", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1);
+        taskManager.updateSubTask(subTask1);
 
         final int subtaskId = subTask1.getId();
         final SubTask savedSubtask = taskManager.getSubTask(subtaskId);
         Assertions.assertEquals(savedSubtask, subTask1);
     }
-
-
-
 }

@@ -2,19 +2,19 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Tasks {
-    protected int id;
-    protected String title;
-    protected String description;
-    public String status;
+abstract public class Tasks {
+    private int id;
+    private String title;
+    private String description;
+    private Enum status;
 
-    public LocalDateTime startTime ;
+    private LocalDateTime startTime ;
 
-    public Duration duration;
+    private long duration;
 
-    public LocalDateTime endTime;
-    public Tasks(int id, String title, String description, String status, LocalDateTime startTime, Duration duration) {
+    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime, long duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -23,7 +23,7 @@ public class Tasks {
         this.duration = duration;
     }
 
-    public Tasks(String title, String description, String status, LocalDateTime startTime, Duration duration) {
+    public Tasks(String title, String description, Enum status, LocalDateTime startTime, long duration) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -31,7 +31,7 @@ public class Tasks {
         this.duration = duration;
     }
 
-    public Tasks(int id, String title, String description, String status, LocalDateTime startTime) {
+    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -39,29 +39,37 @@ public class Tasks {
         this.startTime = startTime;
     }
 
-    public Tasks(int id, String title, String description, String status, LocalDateTime startTime, Duration duration, LocalDateTime endTime) {
+    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime, long duration, LocalDateTime endTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime = startTime.plus(duration);
+    }
+
+    public Tasks(int id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
     }
 
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
+        if(startTime == null){
+            return null;
+        }
+        return startTime.plus(Duration.ofMinutes(duration));
     }
 
-    public Tasks(int id, String title, String description, String status) {
+    public Tasks(int id, String title, String description, Enum status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
     }
 
-    public Tasks(String title, String description, String status) {
+    public Tasks(String title, String description, Enum status) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -96,11 +104,11 @@ public class Tasks {
         this.description = description;
     }
 
-    public String getStatus() {
+    public Enum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Enum status) {
         this.status = status;
     }
 
@@ -108,7 +116,28 @@ public class Tasks {
         return startTime;
     }
 
-    public Duration getDuration() {
+    public long getDuration() {
         return duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tasks tasks = (Tasks) o;
+        return id == tasks.id && duration == tasks.duration && Objects.equals(title, tasks.title) && Objects.equals(description, tasks.description) && Objects.equals(status, tasks.status) && Objects.equals(startTime, tasks.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, status, startTime, duration);
     }
 }

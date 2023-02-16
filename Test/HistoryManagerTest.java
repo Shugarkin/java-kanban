@@ -1,11 +1,8 @@
-package Test;
-
+import model.Status;
 import model.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import service.*;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 
@@ -18,21 +15,21 @@ class HistoryManagerTest {
         boolean answer = historyManager.getHistory().isEmpty();
         Assertions.assertEquals(true, answer, "Список истории не пустой");
 
-        Task task = new Task("Задача", "Для теста", "NEW");
+        Task task = new Task("Задача", "Для теста", Status.NEW);
         historyManager.add(task);
         Assertions.assertEquals(task, historyManager.getHistory().get(0), "Задачи нет в списке истории");
     }
 
     @Test
     public void remoteTest() {
-        Task task = new Task("Задача", "Для теста", "NEW",
-                LocalDateTime.of(2023, Month.JANUARY,01,12,00), Duration.ofMinutes(30));
-        Task task2 = new Task("Задача 2", "Для теста", "NEW",
-                LocalDateTime.of(2023, Month.JANUARY,02,12,00), Duration.ofMinutes(30));
-        Task task3 = new Task("Задача 3", "Для теста", "NEW",
-                LocalDateTime.of(2023, Month.JANUARY,03,12,00), Duration.ofMinutes(30));
-        Task task4 = new Task("Задача 4", "Для теста", "NEW",
-                LocalDateTime.of(2023, Month.JANUARY,04,12,00), Duration.ofMinutes(30));
+        Task task = new Task("Задача", "Для теста", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
+        Task task2 = new Task("Задача 2", "Для теста", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,02,12,00), 30);
+        Task task3 = new Task("Задача 3", "Для теста", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,03,12,00), 30);
+        Task task4 = new Task("Задача 4", "Для теста", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,04,12,00), 30);
         taskManager.addTask(task);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -64,7 +61,8 @@ class HistoryManagerTest {
 
         Assertions.assertEquals(true, answer, "Список не пуст");
 
-        Task task = new Task("Задача", "Для теста", "NEW");
+        Task task = new Task("Задача", "Для теста", Status.NEW,
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
         taskManager.addTask(task);
         historyManager.add(task);
         historyManager.add(task);
