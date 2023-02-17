@@ -40,21 +40,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         taskManager.addEpic(new Epic("Приборка дома", "Как бы грязно уже"));
 
 
-        System.out.println(taskManager.printTask(1));
-        System.out.println(taskManager.printTask(2));
-        System.out.println(taskManager.printEpic(3));
-        System.out.println(taskManager.printSubTask(4));
-        System.out.println(taskManager.printSubTask(5));
-        System.out.println(taskManager.printSubTask(6));
-        System.out.println(taskManager.printEpic(3));
-        System.out.println(taskManager.printEpic(7));
-        System.out.println(taskManager.printEpic(7));
-        System.out.println(taskManager.printEpic(7));
-        System.out.println(taskManager.printSubTask(5));
-        System.out.println(taskManager.printSubTask(4));
-        System.out.println(taskManager.printTask(1));
-
-
         FileBackedTasksManager fileBackedTasksManager = loadFromFile(file);
 
 
@@ -210,7 +195,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     public Tasks fromString(String value) { //метод для создания задачи из строки
-        Enum statusEnum;
+        Status statusEnum;
         Tasks task;
         String[] split = value.split(",");
         int id = Integer.parseInt(split[0]);
@@ -262,13 +247,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             String[] split = s.split(",");
             for (int i = 0; i < split.length; i++) {
                 if (tasks.containsKey(Integer.valueOf(split[i]))) {
-                    printTask(Integer.valueOf(split[i]));
+                    getTask(Integer.valueOf(split[i]));
                 }
                 if (epics.containsKey(Integer.valueOf(split[i]))) {
-                    printEpic(Integer.valueOf(split[i]));
+                    getEpic(Integer.valueOf(split[i]));
                 }
                 if (subTasks.containsKey(Integer.valueOf(split[i]))) {
-                    printSubTask(Integer.valueOf(split[i]));
+                    getSubTask(Integer.valueOf(split[i]));
                 }
             }
         }
@@ -397,10 +382,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 }
-class ManagerSaveException extends RuntimeException {
-    public ManagerSaveException(final String message) {
-        super(message);
-    }
 
-}
 

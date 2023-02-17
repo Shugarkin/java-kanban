@@ -10,7 +10,7 @@ public class Epic extends Tasks {
 
     private LocalDateTime endTime;
 
-    public Epic(int id, String title, String description, Enum status) {
+    public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
     }
 
@@ -18,11 +18,11 @@ public class Epic extends Tasks {
         super(title, description);
     }
 
-    public Epic(String title, String description, Enum status, LocalDateTime startTime, long duration) {
+    public Epic(String title, String description, Status status, LocalDateTime startTime, long duration) {
         super(title, description, status, startTime, duration);
     }
 
-    public Epic(int id, String title, String description, Enum status, LocalDateTime start, LocalDateTime endTime) {
+    public Epic(int id, String title, String description, Status status, LocalDateTime start, LocalDateTime endTime) {
         super(id, title, description, status, start);
         this.endTime = endTime;
     }

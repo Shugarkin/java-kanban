@@ -6,7 +6,6 @@ import model.Task;
 import model.Tasks;
 
 import java.util.List;
-import java.util.TreeSet;
 
 public interface TaskManager {
     List<Task> getTasks();
@@ -21,19 +20,7 @@ public interface TaskManager {
 
     void addSubTask(SubTask subTask);
 
-    Task printAllTask();
-
-    Epic printAllEpic();
-
-    void printAllSubTaskForEpic(int epicId);
-
-    SubTask printAllSubTask();
-
-    Task printTask(Integer taskId);
-
-    Epic printEpic(Integer epicId);
-
-    SubTask printSubTask(Integer subTaskId);
+    List<SubTask> getSubtasksByEpic(int epicId);
 
     void deleteTask();
 
@@ -63,21 +50,8 @@ public interface TaskManager {
 
     SubTask getSubTask(Integer id);
 
-    void durationEpicCheck(int epicId);
+    List<Tasks> getPrioritizedTasks();
 
-    Epic dateEpicCheck(int epicId);
-
-    void prioritizedTasksInLIst();
-
-    TreeSet<Tasks> getPrioritizedTasks();
-
-//    TreeSet<Tasks> getPrioritizedTasks();
-
-//    void prioritizedTasks();
-
-//    void prioritizedTasks(Tasks task);
-
-//    TreeSet<Tasks> prioritizedTasks();
 }
 
 

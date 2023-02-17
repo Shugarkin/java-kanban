@@ -6,26 +6,21 @@ import java.util.Objects;
 
 public class Task extends Tasks {
 
-    public Task(int id, String title, String description, Enum status) {
+    public Task(int id, String title, String description, Status status) {
         super(id, title, description, status);
     }
 
-    public Task(String title, String description, Enum status) {
+    public Task(String title, String description, Status status) {
         super(title, description, status);
     }
 
-    public Task(int id, String title, String description, Enum status, LocalDateTime startTime, long duration) {
+    public Task(int id, String title, String description, Status status, LocalDateTime startTime, long duration) {
         super(id, title, description, status, startTime, duration);
     }
 
-    public Task(String title, String description, Enum status, LocalDateTime startTime, long duration) {
+    public Task(String title, String description, Status status, LocalDateTime startTime, long duration) {
         super(title, description, status, startTime, duration);
     }
-
-    public Task(int id, String title, String description, Enum status, LocalDateTime startTime, long duration, LocalDateTime endTime) {
-        super(id, title, description, status, startTime, duration, endTime);
-    }
-
 
     @Override
     public LocalDateTime getEndTime() {

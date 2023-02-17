@@ -8,13 +8,13 @@ abstract public class Tasks {
     private int id;
     private String title;
     private String description;
-    private Enum status;
+    private Status status;
 
     private LocalDateTime startTime ;
 
     private long duration;
 
-    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime, long duration) {
+    public Tasks(int id, String title, String description, Status status, LocalDateTime startTime, long duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -23,7 +23,7 @@ abstract public class Tasks {
         this.duration = duration;
     }
 
-    public Tasks(String title, String description, Enum status, LocalDateTime startTime, long duration) {
+    public Tasks(String title, String description, Status status, LocalDateTime startTime, long duration) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -31,21 +31,12 @@ abstract public class Tasks {
         this.duration = duration;
     }
 
-    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime) {
+    public Tasks(int id, String title, String description, Status status, LocalDateTime startTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.startTime = startTime;
-    }
-
-    public Tasks(int id, String title, String description, Enum status, LocalDateTime startTime, long duration, LocalDateTime endTime) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.startTime = startTime;
-        this.duration = duration;
     }
 
     public Tasks(int id, String title, String description) {
@@ -62,14 +53,14 @@ abstract public class Tasks {
         return startTime.plus(Duration.ofMinutes(duration));
     }
 
-    public Tasks(int id, String title, String description, Enum status) {
+    public Tasks(int id, String title, String description, Status status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
     }
 
-    public Tasks(String title, String description, Enum status) {
+    public Tasks(String title, String description, Status status) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -104,11 +95,11 @@ abstract public class Tasks {
         this.description = description;
     }
 
-    public Enum getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Enum status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

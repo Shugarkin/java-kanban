@@ -1,13 +1,11 @@
 package service;
 
 import model.Tasks;
-import org.w3c.dom.Node;
-
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private Map<Integer, nodes> historyMap = new HashMap<>(); //мапа для id задач с их nodes
+    private Map<Integer, Node<Tasks>> nodes = new HashMap<>(); //мапа для id задач с их Node
     private CustomLinkedList<Tasks> historyList = new CustomLinkedList<>(); //кастомный лист для хранения истории
 
     @Override
@@ -18,37 +16,37 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Tasks task) { //метод для добавления задач в кастомный лист с учетом того, что в нем не было такой же задачи
-        if(historyMap.containsKey(task.getId())) {
-            historyList.removeNodes(historyMap.get(task.getId()));
+        if(nodes.containsKey(task.getId())) {
+            historyList.removeNode(nodes.get(task.getId()));
         }
         historyList.linkLast(task);
-        historyMap.put(task.getId(), historyList.getLast());
+        nodes.put(task.getId(), historyList.getLast());
     }
     @Override
     public void remove(int id) { //метод для удаления задач из листа и мапы
-        historyList.removeNodes(historyMap.remove(id));
+        historyList.removeNode(nodes.remove(id));
     }
 
 
     private static class CustomLinkedList<T>  { //кастомный лист
 
-        public nodes<T> head;
-        public nodes<T> tail;
+        public Node<T> head;
+        public Node<T> tail;
 
         public void linkLast(T task) { //метод добавления в лист хвоста
-            final nodes<T> oldTail = tail;
-            final nodes<T> newnodes = new nodes<>(oldTail, task, null);
-            tail = newnodes;
+            final Node<T> oldTail = tail;
+            final Node<T> newNode = new Node<>(oldTail, task, null);
+            tail = newNode;
             if (oldTail == null) {
-                head = newnodes;
+                head = newNode;
             } else {
-                oldTail.next = newnodes;
+                oldTail.next = newNode;
             }
         }
 
-        public List<Tasks> getTasks() { //метод для передачи значений из кастомного листа в обычный
-            List<Tasks> arrayHistoryList = new ArrayList<>();
-            nodes<Tasks> current = (nodes<Tasks>) head;
+        public List<T> getTasks() { //метод для передачи значений из кастомного листа в обычный
+            List<T> arrayHistoryList = new ArrayList<>();
+            Node<T> current = head;
             while(current != null) {
                 arrayHistoryList.add(current.data);
                 current = current.next;
@@ -56,40 +54,40 @@ public class InMemoryHistoryManager implements HistoryManager {
             return arrayHistoryList;
         }
 
-        public void removeNodes(nodes<T> nodes) { //метод удаления nodes из кастомного списка
-            if(nodes != null) {
-                final nodes<T> next = nodes.next;
-                final nodes<T> prev = nodes.prev;
+        public void removeNode(Node<T> Node) { //метод удаления Node из кастомного списка
+            if(Node != null) {
+                final Node<T> next = Node.next;
+                final Node<T> prev = Node.prev;
 
                 if (prev == null) {
                     head = next;
                 } else {
                     prev.next = next;
-                    nodes.prev = null;
+                    Node.prev = null;
                 }
 
                 if (next == null) {
                     tail = prev;
                 } else {
                     next.prev = prev;
-                    nodes.next = null;
+                    Node.next = null;
                 }
-                nodes.data = null;
+                Node.data = null;
             }
         }
 
-        public nodes<T> getLast() { //метод который передает последнее значение в листе
+        public Node<T> getLast() { //метод который передает последнее значение в листе
             return tail;
         }
     }
 
-    static private class nodes <T> {
+    static private class Node <T> {
 
         private T data;
-        private nodes<T> next;
-        private nodes<T> prev;
+        private Node<T> next;
+        private Node<T> prev;
 
-        public nodes(nodes<T> prev, T data, nodes<T> next) {
+        public Node(Node<T> prev, T data, Node<T> next) {
             this.data = data;
             this.next = next;
             this.prev = prev;
