@@ -9,9 +9,7 @@ abstract public class Tasks {
     private String title;
     private String description;
     private Status status;
-
     private LocalDateTime startTime ;
-
     private long duration;
 
     public Tasks(int id, String title, String description, Status status, LocalDateTime startTime, long duration) {

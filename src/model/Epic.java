@@ -31,15 +31,20 @@ public class Epic extends Tasks {
         super(id, title, description);
     }
 
-    public void addSubTaskId(int epicId) {
-        subTaskIds.add(epicId);
+    public Epic(int id, String title, String description, Status status, LocalDateTime startTime, LocalDateTime endTime, long duration) {
+        super(id, title, description, status, startTime, duration);
+        this.endTime = endTime;
+    }
+
+    public void addSubTaskId(int subTaskId) {
+        subTaskIds.add(subTaskId);
     }
 
     public List<Integer> getSubTaskId() {
         return subTaskIds;
     }
 
-    public void setSubTaskIds(ArrayList<Integer> subTaskIds) {
+    public void setSubTaskIds(List<Integer> subTaskIds) {
         this.subTaskIds = subTaskIds;
     }
 
@@ -66,7 +71,9 @@ public class Epic extends Tasks {
                 "," +
                 getStartTime() +
                 "," +
-                endTime;
+                endTime +
+                 "," +
+                getDuration();
     }
 
 

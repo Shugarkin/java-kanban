@@ -26,36 +26,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    public void printAllTaskTest() {
-        super.printAllTaskTest();
-    }
-
-    @Test
-    public void printAllEpicTest() {
-        super.printAllEpicTest();
-    }
-
-    @Test
-    public void printAllSubtaskTest() {
-        super.printAllSubtaskTest();
-    }
-
-    @Test
-    public void printTaskTest() {
-        super.printTaskTest();
-    }
-
-    @Test
-    public void printEpicTest() {
-        super.printEpicTest();
-    }
-
-    @Test
-    public void printSubTaskTest() {
-        super.printSubTaskTest();
-    }
-
-    @Test
     public void deleteTaskTest() {
         super.deleteTaskTest();
     }

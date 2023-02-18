@@ -18,14 +18,14 @@ public class InMemoryTaskManager implements TaskManager {
             return o1.getId() - o2.getId();
         } else if (dateTime1 == null) {
             return 1;
-        } else if (dateTime1 == null) {
+        } else if (dateTime2 == null) {
             return -1;
         } else {
             return dateTime1.compareTo(dateTime2);
         }
     };
 
-    private final Set<Tasks> prioritizedTasks = new TreeSet(comparator);
+    protected final Set<Tasks> prioritizedTasks = new TreeSet<>(comparator);
 
 
     protected int nextId = 1;
@@ -91,9 +91,9 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(subTask.getId());
             prioritizedTasks.remove(subTask);
         }
-        for (SubTask subTask : subTasks.values()) {
-            epics.get(subTask.getEpicId()).getSubTaskId().clear();
-            dateEpicCheck(subTask.getEpicId());
+        for (Epic epic : epics.values()) {
+            epic.getSubTaskId().clear();
+            dateEpicCheck(epic.getId());
         }
         subTasks.clear();
     }
@@ -133,9 +133,9 @@ public class InMemoryTaskManager implements TaskManager {
         if(!tasks.containsKey(id)){
             throw new NullPointerException("Задачи с таким id нет");
         }
+        prioritizedTasks.remove(tasks.get(id));
         tasks.remove(id);
         historyManager.remove(id);
-        prioritizedTasks.remove(tasks.get(id));
     }
     @Override
     public void deleteEpicForId(int id) {//удаляет эпик по id
@@ -155,14 +155,18 @@ public class InMemoryTaskManager implements TaskManager {
         if(!subTasks.containsKey(id)){
             throw new NullPointerException("Задачи с таким id нет");
         }
+        SubTask subTask = subTasks.get(id);
+        epics.get(subTask.getEpicId()).getSubTaskId().remove(subTask.getId());
+        prioritizedTasks.remove(subTasks.get(id));
         subTasks.remove(id);
         historyManager.remove(id);
-        prioritizedTasks.remove(subTasks.get(id));
+        checkStatus(subTask.getEpicId());
+        dateEpicCheck(subTask.getEpicId());
     }
 
     @Override
     public void checkStatus(int epicId) {//метод для определения статуса эпика
-        Set<Enum> statusSubTask = new HashSet<>();
+        Set<Status> statusSubTask = new HashSet<>();
         Epic epic = epics.get(epicId); //определенный эпик
         for (Integer subTaskId : epic.getSubTaskId()) {
             statusSubTask.add(subTasks.get(subTaskId).getStatus());

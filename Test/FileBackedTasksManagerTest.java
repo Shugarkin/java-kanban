@@ -23,24 +23,35 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     public void fileManagerTest() {
         File file = new File("fileTest.csv");
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
-        boolean answer = fileManager.getSaveList().isEmpty();
-        Assertions.assertEquals(true, answer, "Список не пуст");
+
+        boolean answer1 = fileManager.getTasks().isEmpty();
+        Assertions.assertEquals(true, answer1, "Список не пуст");
+        boolean answer2 = fileManager.getEpics().isEmpty();
+        Assertions.assertEquals(true, answer2, "Список не пуст");
+        boolean answer3 = fileManager.getSubTasks().isEmpty();
+        Assertions.assertEquals(true, answer3, "Список не пуст");
+
 
         fileManager.addTask(new Task("Задача", "Для проверки", Status.NEW,
                 LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
-        boolean answer2 = fileManager.getHistory().isEmpty();
-        Assertions.assertEquals(true, answer2, "Список не пуст");
+        fileManager.getTask(1);
+        boolean answer4 = fileManager.getTasks().isEmpty();
+        Assertions.assertEquals(false, answer4, "Список пуст");
+
 
         fileManager.addEpic(new Epic("Эпик", "Для проверки"));
-        fileManager.printEpic(2);
+        fileManager.getEpic(2);
+        boolean answer5 = fileManager.getEpics().isEmpty();
+        Assertions.assertEquals(false, answer5, "Список пуст");
+
 
         fileManager.addSubTask(new SubTask("Подзадача", "Для проверки", Status.NEW,
                 LocalDateTime.of(2023, Month.JANUARY,6,20,00), 30, 2));
-        boolean answer3 = fileManager.getHistory().isEmpty();
-        Assertions.assertEquals(false, answer3, "Список пуст");
+        fileManager.getSubTask(3);
+        boolean answer6 = fileManager.getSubTasks().isEmpty();
+        Assertions.assertEquals(false, answer6, "Список пуст");
 
         FileBackedTasksManager fileBackedTasksManager = loadFromFile(file);
-        Assertions.assertEquals(fileManager.getSaveList(), fileBackedTasksManager.getSaveList(), "Не создается из файла");
 
         Assertions.assertEquals(fileManager.getTasks(),
                 fileBackedTasksManager.getTasks(), "Список задач после выгрузки не совпададает");

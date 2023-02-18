@@ -1,7 +1,6 @@
-id,type,name,status,description,start,finish,epic
-
+id,type,name,status,description,start,finish/duration,epicId/duration
 1,Task,Задача,NEW,Для проверки,2023-01-01T12:00,30
-2,Epic,Эпик,NEW,Для проверки,2023-01-06T20:00,2023-01-06T20:30
+2,Epic,Эпик,NEW,Для проверки,2023-01-06T20:00,2023-01-06T20:30,30
 3,SubTask,Подзадача,NEW,Для проверки,2023-01-06T20:00,30,2
 
-2,
+1,2,3

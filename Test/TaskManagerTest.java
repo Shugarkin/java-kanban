@@ -28,27 +28,27 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     }
 
     private Executable generateExecutablePrintAllTaskTest() {
-        return () -> taskManager.printAllTask();
+        return () -> taskManager.getTasks();
     }
 
     private Executable generateExecutablePrintAllEpicTest() {
-        return () -> taskManager.printAllEpic();
+        return () -> taskManager.getEpics();
     }
 
     private Executable generateExecutablePrintAllSubtaskTest() {
-        return () -> taskManager.printAllSubTask();
+        return () -> taskManager.getSubTasks();
     }
 
     private Executable generateExecutablePrintTask(Integer id) {
-        return () -> taskManager.printTask(id);
+        return () -> taskManager.getTask(id);
     }
 
     private Executable generateExecutablePrintEpic(Integer id) {
-        return () -> taskManager.printEpic(id);
+        return () -> taskManager.getEpic(id);
     }
 
     private Executable generateExecutablePrintSubTask(Integer id) {
-        return () -> taskManager.printSubTask(id);
+        return () -> taskManager.getSubTask(id);
     }
 
     private Executable generateExecutableDeleteForIdTask(Integer id) {
@@ -87,11 +87,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
 
         //проверка на пустой список
         taskManager.deleteTask();
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapTask()
-        );
-        assertEquals(e.getMessage(), "Список задач пуст");
+        boolean answer = taskManager.getTasks().isEmpty();
+        assertEquals(answer, true, "Список задач не пуст");
     }
 
     @Test
@@ -113,11 +110,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
 
         //проверка на пустой список
         taskManager.deleteEpic();
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapEpic()
-        );
-        assertEquals(e.getMessage(), "Список задач пуст");
+        boolean answer = taskManager.getEpics().isEmpty();
+        assertEquals(answer, true, "Список эпиков не пуст");
     }
 
     @Test
@@ -147,109 +141,13 @@ abstract class TaskManagerTest<T extends TaskManager>  {
 
         //проверка на пустой список эпиков
         taskManager.deleteEpic();
-        NullPointerException ex = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapEpic()
-        );
-        assertEquals(ex.getMessage(), "Список задач пуст");
+        boolean answer = taskManager.getEpics().isEmpty();
+        assertEquals(answer, true, "Список эпиков не пуст");
 
         //проверка на пустой список
         taskManager.deleteSubTask();
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapSubtask()
-        );
-        assertEquals(e.getMessage(), "Список задач пуст");
-    }
-
-    @Test
-    public void printAllTaskTest() {//тест для проверки метода печати всех тасков
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintAllTaskTest()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список задач пуст");
-    }
-
-    @Test
-    public void printAllEpicTest() {//тест для проверки метода печати всех эпиков
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintAllEpicTest()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список эпиков пуст");
-    }
-
-    @Test
-    public void printAllSubtaskTest() {//тест для проверки метода печати всех сабтасков
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintAllSubtaskTest()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список подзадач пуст");
-    }
-
-    @Test
-    public void printTaskTest()  {
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintTask(1)
-        );
-        Assertions.assertEquals(e.getMessage(), "Список задач пуст");
-
-        Task task = new Task("Задача", "Для проверки", Status.NEW,
-                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30);
-        taskManager.addTask(task);
-
-        Assertions.assertEquals(taskManager.printTask(1), task);
-
-        NullPointerException ex = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintTask(2)
-        );
-        Assertions.assertEquals("Возможно вы неверно ввели id или задача удалена", ex.getMessage());
-    }
-
-    @Test
-    public void printEpicTest() {
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintEpic(1)
-        );
-        Assertions.assertEquals(e.getMessage(), "Список эпиков пуст");
-
-        Epic epic = new Epic("Эпик", "Для проверки");
-        taskManager.addEpic(epic);
-
-        Assertions.assertEquals(taskManager.printEpic(1), epic);
-
-        NullPointerException ex = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintEpic(2)
-        );
-        Assertions.assertEquals("Возможно вы неверно ввели id или задача удалена", ex.getMessage());
-    }
-
-    @Test
-    public void printSubTaskTest() {
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintSubTask(1)
-        );
-        Assertions.assertEquals(e.getMessage(), "Список подзадач пуст");
-
-        taskManager.addEpic(new Epic("Эпик", "Для проверки"));
-        SubTask subTask = new SubTask("Задача", "Для проверки", Status.NEW,
-                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1);
-        taskManager.addSubTask(subTask);
-
-        Assertions.assertEquals(taskManager.printSubTask(2), subTask);
-
-        NullPointerException ex = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutablePrintSubTask(1)
-        );
-        Assertions.assertEquals("Возможно вы неверно ввели id или задача удалена", ex.getMessage());
+        boolean answer1 = taskManager.getSubTasks().isEmpty();
+        assertEquals(answer1, true, "Список подзадач не пуст");
     }
 
     @Test
@@ -258,11 +156,9 @@ abstract class TaskManagerTest<T extends TaskManager>  {
                 LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
         taskManager.deleteTask();
 
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapTask()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список задач пуст", "Задачи не удаленны");
+        boolean answer = taskManager.getTasks().isEmpty();
+        assertEquals(answer, true, "Список задач не пуст");
+
     }
 
     @Test
@@ -270,11 +166,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
         taskManager.deleteEpic();
 
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapEpic()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список задач пуст", "Задачи не удаленны");
+        boolean answer = taskManager.getEpics().isEmpty();
+        assertEquals(answer, true, "Список эпиков не пуст");
     }
 
     @Test
@@ -284,11 +177,8 @@ abstract class TaskManagerTest<T extends TaskManager>  {
                 LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30, 1));
         taskManager.deleteSubTask();
 
-        NullPointerException e = Assertions.assertThrows(
-                NullPointerException.class,
-                generateExecutableForEmptyMapSubtask()
-        );
-        Assertions.assertEquals(e.getMessage(), "Список задач пуст", "Задачи не удаленны");
+        boolean answer = taskManager.getSubTasks().isEmpty();
+        assertEquals(answer, true, "Список подзадач не пуст");
     }
 
     @Test
