@@ -16,6 +16,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Tasks task) { //метод для добавления задач в кастомный лист с учетом того, что в нем не было такой же задачи
+        if (task == null) {
+            return;
+        }
         if(nodes.containsKey(task.getId())) {
             historyList.removeNode(nodes.get(task.getId()));
         }

@@ -95,19 +95,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private void fileToHistory (String[] history) { //метод берет из листа с истории файла и добавляяет в обычную
-            for (int i = 0; i < history.length; i++) {
-                int key = Integer.valueOf(history[i]);
-                if (tasks.containsKey(key)) {
+        for (String s : history) {
+            int key = Integer.valueOf(s);
+            if (tasks.containsKey(key)) {
                     historyManager.add(tasks.get(key));
-                }
-                if (epics.containsKey(key)) {
+            }
+            if (epics.containsKey(key)) {
                     historyManager.add(epics.get(key));
-                }
-                if (subTasks.containsKey(key)) {
+            }
+            if (subTasks.containsKey(key)) {
                     historyManager.add(subTasks.get(key));
-                }
             }
         }
+    }
 
 
     public static FileBackedTasksManager  loadFromFile(File file) { //метод создает новый FileBackedTasksManager из файла

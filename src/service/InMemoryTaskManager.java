@@ -66,12 +66,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask() {//очищает задачи
-            for (Task task : tasks.values()) {
-                historyManager.remove(task.getId());
-                prioritizedTasks.remove(task);
-            }
-            tasks.clear();
+        for (Task task : tasks.values()) {
+            historyManager.remove(task.getId());
+            prioritizedTasks.remove(task);
         }
+        tasks.clear();
+    }
 
     @Override
     public void deleteEpic() {//очищает эпики
@@ -93,6 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Epic epic : epics.values()) {
             epic.getSubTaskId().clear();
+            checkStatus(epic.getId());
             dateEpicCheck(epic.getId());
         }
         subTasks.clear();
@@ -156,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new NullPointerException("Задачи с таким id нет");
         }
         SubTask subTask = subTasks.get(id);
-        epics.get(subTask.getEpicId()).getSubTaskId().remove(subTask.getId());
+        epics.get(subTask.getEpicId()).getSubTaskId().remove((Integer) subTask.getId());
         prioritizedTasks.remove(subTasks.get(id));
         subTasks.remove(id);
         historyManager.remove(id);
