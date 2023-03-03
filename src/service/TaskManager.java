@@ -51,7 +51,6 @@ public interface TaskManager {
     SubTask getSubTask(Integer id);
 
     List<Tasks> getPrioritizedTasks();
-
 }
 
 

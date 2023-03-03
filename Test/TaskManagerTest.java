@@ -16,41 +16,6 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     public void setTaskManager(T taskManager) {
         this.taskManager = taskManager;
     }
-    private Executable generateExecutableForEmptyMapTask() {//метод для создания ошибки с пустым списком таска
-        return () -> taskManager.getTasks();
-    }
-
-    private Executable generateExecutableForEmptyMapEpic() {//метод для создания ошибки с пустым списком эпика
-        return () -> taskManager.getEpics();
-    }
-    private Executable generateExecutableForEmptyMapSubtask() {//метод для создания ошибки с пустым списком сабтаска
-        return () -> taskManager.getSubTasks();
-    }
-
-    private Executable generateExecutablePrintAllTaskTest() {
-        return () -> taskManager.getTasks();
-    }
-
-    private Executable generateExecutablePrintAllEpicTest() {
-        return () -> taskManager.getEpics();
-    }
-
-    private Executable generateExecutablePrintAllSubtaskTest() {
-        return () -> taskManager.getSubTasks();
-    }
-
-    private Executable generateExecutablePrintTask(Integer id) {
-        return () -> taskManager.getTask(id);
-    }
-
-    private Executable generateExecutablePrintEpic(Integer id) {
-        return () -> taskManager.getEpic(id);
-    }
-
-    private Executable generateExecutablePrintSubTask(Integer id) {
-        return () -> taskManager.getSubTask(id);
-    }
-
     private Executable generateExecutableDeleteForIdTask(Integer id) {
         return () -> taskManager.deleteTaskForId(id);
     }
@@ -62,8 +27,6 @@ abstract class TaskManagerTest<T extends TaskManager>  {
     private Executable generateExecutableDeleteForIdSubtask(Integer id) {
         return () -> taskManager.deleteSubTaskForId(id);
     }
-
-
 
     @Test
     void addTaskTest() { //тест для проверки метода создания таска

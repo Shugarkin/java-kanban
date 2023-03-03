@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="ejlchina.okhttps.gson" type="repository">
+    <properties maven-id="com.ejlchina:okhttps-gson:3.5.3" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/okhttps-gson-3.5.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/okhttps-3.5.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/data-core-1.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/okhttp-3.14.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/okio-1.17.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/data-gson-1.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gson-2.9.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

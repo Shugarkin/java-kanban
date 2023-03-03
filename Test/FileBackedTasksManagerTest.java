@@ -13,15 +13,16 @@ import java.time.Month;
 import static service.FileBackedTasksManager.loadFromFile;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
+
+    private File file = new File("fileTest.csv");
     @BeforeEach
     public void before() {
-        File file = new File("fileTest.csv");
         setTaskManager(new FileBackedTasksManager(file));
     }
 
     @Test
     public void fileManagerTest() {
-        File file = new File("fileTest.csv");
+
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
 
         boolean answer1 = fileManager.getTasks().isEmpty();
@@ -69,7 +70,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
         Assertions.assertEquals(fileManager.getNextId(),
                 fileBackedTasksManager.getNextId(), "Значения последней созданной задачи не совпадает");
-        System.out.println();
     }
 
 }

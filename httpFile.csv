@@ -1,0 +1,4 @@
+id,type,name,status,description,start,finish/duration,epicId/duration
+1,Epic,test,DONE,test,2000-02-03T12:00,2000-02-03T12:30,30
+2,SubTask,test,DONE,test,2000-02-03T12:00,30,1
+

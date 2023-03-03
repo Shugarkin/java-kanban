@@ -9,13 +9,15 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private static final String HEADER = "id,type,name,status,description,start,finish/duration,epicId/duration";
-    private final File file;
+    private File file;
     public FileBackedTasksManager(File file) {
-        super();
         this.file = file;
     }
 
-    private void save() { //метод для добавления списка задач и истории в файл
+    public FileBackedTasksManager() {
+    }
+
+    protected void save() { //метод для добавления списка задач и истории в файл
         try (Writer fileWriter = new FileWriter(file)) {
             StringBuilder sb = new StringBuilder();
             sb.append(HEADER); //Заголовок файла, вынесенный в поля класса в виде статической константы
@@ -38,7 +40,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
 
-    private void historyToString(StringBuilder sb) {
+    protected void historyToString(StringBuilder sb) {
         List<Tasks> history = historyManager.getHistory();
         if (!history.isEmpty()) {
             sb.append(history.get(0).getId());
@@ -49,10 +51,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-    private Tasks fromString(String value) { //метод для создания задачи из строки
+    public Tasks fromString(String value) { //метод для создания задачи из строки
         Tasks task;
         String[] split = value.split(",");
         int id = Integer.parseInt(split[0]);
+        if(id >= nextId) {
+            nextId = id + 1;
+        }
         String title = split[2];
         String description = split[4];
         Status status = Status.valueOf(split[3]);
@@ -75,26 +80,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             long duration = Long.parseLong(split[7]);
             task = new Epic(id, title, description, status, start, finish, duration);
             epics.put(id, (Epic) task);
-            nextId++;
         } else if(name.equals("Task")) {
             long duration = Long.parseLong(split[6]);
             task = new Task(id, title, description, status, start, duration);
             tasks.put(id, (Task) task);
-            nextId++;
             prioritizedTasks.add(task);
         } else {
             long duration = Long.parseLong(split[6]);
             int epicId = Integer.parseInt(split[7]);
             task = new SubTask(id, title, description, status, start, duration, epicId);
             subTasks.put(id, (SubTask) task);
-            epics.get(((SubTask) task).getEpicId()).addSubTaskId(id);
-            nextId++;
+            epics.get(((SubTask) task).getEpicId()).getSubTaskId().add(id);
             prioritizedTasks.add(task);
         }
         return task;
     }
 
-    private void fileToHistory (String[] history) { //метод берет из листа с истории файла и добавляяет в обычную
+    protected void fileToHistory (String[] history) { //метод берет из листа с истории файла и добавляяет в обычную
         for (String s : history) {
             int key = Integer.valueOf(s);
             if (tasks.containsKey(key)) {
@@ -166,6 +168,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.deleteEpic();
         save();
     }
+
     @Override
     public void deleteSubTask() {//очищает подзадачи
         super.deleteSubTask();
@@ -224,7 +227,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return subTask;
     }
-
 }
 
 
