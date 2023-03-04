@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 abstract public class Tasks {
-    private int id;
+    private Integer id;
     private String title;
     private String description;
     private Status status;
     private LocalDateTime startTime ;
     private long duration;
 
-    public Tasks(int id, String title, String description, Status status, LocalDateTime startTime, long duration) {
+    public Tasks(Integer id, String title, String description, Status status, LocalDateTime startTime, long duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -29,7 +29,7 @@ abstract public class Tasks {
         this.duration = duration;
     }
 
-    public Tasks(int id, String title, String description, Status status, LocalDateTime startTime) {
+    public Tasks(Integer id, String title, String description, Status status, LocalDateTime startTime) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,7 +37,7 @@ abstract public class Tasks {
         this.startTime = startTime;
     }
 
-    public Tasks(int id, String title, String description) {
+    public Tasks(Integer id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -51,7 +51,7 @@ abstract public class Tasks {
         return startTime.plus(Duration.ofMinutes(duration));
     }
 
-    public Tasks(int id, String title, String description, Status status) {
+    public Tasks(Integer id, String title, String description, Status status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -69,7 +69,7 @@ abstract public class Tasks {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -1,4 +1,4 @@
-package service;
+package servers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -7,9 +7,10 @@ import com.sun.net.httpserver.HttpServer;
 import model.Epic;
 import model.SubTask;
 import model.Task;
+import service.Managers;
+import service.TaskManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -21,9 +22,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class HttpTaskServer {
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    static Gson gson;
+    private Gson gson;
     private HttpServer httpServer;
-    static  TaskManager taskManager;
+    private TaskManager taskManager;
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
@@ -41,9 +42,9 @@ public class HttpTaskServer {
         httpServer.stop(1);
     }
 
-    static class TasksHandler implements HttpHandler {
+    private class TasksHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange httpExchange) {
+        public void handle(HttpExchange httpExchange) throws IOException {
             try {
                 String path = httpExchange.getRequestURI().getPath();
                 String method = httpExchange.getRequestMethod();
@@ -192,10 +193,13 @@ public class HttpTaskServer {
                         break;
                     case "POST":
                         if (Pattern.matches("^/tasks/task/", path)) {
-                            InputStream input = httpExchange.getRequestBody();
-                            String taskString = new String(input.readAllBytes(), DEFAULT_CHARSET);
+                            String taskString = readText(httpExchange);
+                            if(taskString == null) {
+                                httpExchange.sendResponseHeaders(400, 0);
+                                return;
+                            }
                             Task task = gson.fromJson(taskString, Task.class);
-                            if (taskManager.getTasks().contains(task)) {
+                            if(task.getId() != null) {
                                 taskManager.updateTask(task);
                                 httpExchange.sendResponseHeaders(200, 0);
                                 System.out.println("Задача успешно заменена");
@@ -205,11 +209,14 @@ public class HttpTaskServer {
                                 System.out.println("Задача успешно добавлена");
                             }
                         } else if (Pattern.matches("^/tasks/epic/", path)) {
-                            InputStream input = httpExchange.getRequestBody();
-                            String epicString = new String(input.readAllBytes(), DEFAULT_CHARSET);
+                            String epicString = readText(httpExchange);
+                            if(epicString == null) {
+                                httpExchange.sendResponseHeaders(400, 0);
+                                return;
+                            }
                             Epic epic = gson.fromJson(epicString, Epic.class);
                             epic.setSubTaskIds(new ArrayList<>());//иначе поле subtaskIds выдает null если его не указывать при создании
-                            if (taskManager.getEpics().contains(epic)) {
+                            if (epic.getId() != null) {
                                 taskManager.updateEpic(epic);
                                 httpExchange.sendResponseHeaders(200, 0);
                                 System.out.println("Эпик успешно заменен");
@@ -219,11 +226,13 @@ public class HttpTaskServer {
                                 System.out.println("Эпик успешно добавлен");
                             }
                         } else if (Pattern.matches("^/tasks/subtask/", path)) {
-                            InputStream input = httpExchange.getRequestBody();
-                            String subtaskString =
-                                    new String(input.readAllBytes(), DEFAULT_CHARSET);
+                            String subtaskString = readText(httpExchange);
+                            if (subtaskString == null) {
+                                httpExchange.sendResponseHeaders(400, 0);
+                                return;
+                            }
                             SubTask subtask = gson.fromJson(subtaskString, SubTask.class);
-                            if (taskManager.getSubTasks().contains(subtask)) {
+                            if (subtask.getId() != null) {
                                 taskManager.updateSubTask(subtask);
                                 httpExchange.sendResponseHeaders(200, 0);
                                 System.out.println("Подзадача успешно заменена");
@@ -233,7 +242,7 @@ public class HttpTaskServer {
                                 System.out.println("Подзадача успешно добавлена");
                             }
                         } else {
-                            httpExchange.sendResponseHeaders(405, 0);
+                            httpExchange.sendResponseHeaders(404, 0);
                             System.out.println("Произошли технические шоколадки");
                         }
                         break;
@@ -243,7 +252,7 @@ public class HttpTaskServer {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                httpExchange.sendResponseHeaders(400, 0);
             } finally {
                 httpExchange.close();
             }
@@ -262,6 +271,10 @@ public class HttpTaskServer {
             h.getResponseHeaders().add("Content-Type", "application/json");
             h.sendResponseHeaders(200, resp.length);
             h.getResponseBody().write(resp);
+        }
+
+        private String readText(HttpExchange h) throws IOException {
+            return new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 }

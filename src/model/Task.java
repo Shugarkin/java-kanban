@@ -5,7 +5,11 @@ import java.util.Objects;
 
 public class Task extends Tasks {
 
-    public Task(int id, String title, String description, Status status) {
+
+
+    private String name = "Task";
+
+    public Task(Integer id, String title, String description, Status status) {
         super(id, title, description, status);
     }
 
@@ -13,7 +17,7 @@ public class Task extends Tasks {
         super(title, description, status);
     }
 
-    public Task(int id, String title, String description, Status status, LocalDateTime startTime, long duration) {
+    public Task(Integer id, String title, String description, Status status, LocalDateTime startTime, long duration) {
         super(id, title, description, status, startTime, duration);
     }
 
@@ -26,11 +30,15 @@ public class Task extends Tasks {
         return super.getEndTime();
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "\n" + getId() +
                 "," +
-                "Task" +
+                getName() +
                 "," +
                 getTitle() +
                 "," +

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.HttpTaskManager;
-import service.HttpTaskServer;
-import service.KVServer;
+import servers.HttpTaskServer;
+import servers.KVServer;
 import service.Managers;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.time.Month;
 
 public class HttpTaskServerTest {
     private URI uri = URI.create("http://localhost:8078");
-    private HttpTaskManager taskManager = Managers.getDefault(uri);
+    private HttpTaskManager taskManager;
     private KVServer server;
     private HttpTaskServer httpTaskServer;
     private HttpClient client;
@@ -32,6 +32,7 @@ public class HttpTaskServerTest {
     public  void before() throws IOException {
         server = new KVServer();
         server.start();
+        taskManager = Managers.getDefault(uri);
         httpTaskServer = new HttpTaskServer(taskManager);
         httpTaskServer.start();
         client = HttpClient.newHttpClient();

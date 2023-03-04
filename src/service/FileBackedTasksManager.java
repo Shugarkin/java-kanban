@@ -90,7 +90,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             int epicId = Integer.parseInt(split[7]);
             task = new SubTask(id, title, description, status, start, duration, epicId);
             subTasks.put(id, (SubTask) task);
-            epics.get(((SubTask) task).getEpicId()).getSubTaskId().add(id);
+            epics.get(((SubTask) task).getEpicId()).getSubtaskId().add(id);
             prioritizedTasks.add(task);
         }
         return task;
@@ -100,7 +100,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         for (String s : history) {
             int key = Integer.valueOf(s);
             if (tasks.containsKey(key)) {
-                    historyManager.add(tasks.get(key));
+                historyManager.add(tasks.get(key));
             }
             if (epics.containsKey(key)) {
                     historyManager.add(epics.get(key));

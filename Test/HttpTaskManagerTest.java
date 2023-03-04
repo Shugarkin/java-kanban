@@ -3,6 +3,8 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.*;
+import servers.HttpTaskServer;
+import servers.KVServer;
 import service.*;
 
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.time.Month;
 
 class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
     private URI uri = URI.create("http://localhost:8078");
-    private HttpTaskManager taskManager = Managers.getDefault(uri);
+    private HttpTaskManager taskManager;
     private KVServer server;
     private HttpTaskServer httpTaskServer;
 
@@ -21,6 +23,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
     public  void before() throws IOException {
         server = new KVServer();
         server.start();
+        taskManager = Managers.getDefault(uri);
         httpTaskServer = new HttpTaskServer(taskManager);
         httpTaskServer.start();
         setTaskManager(taskManager);
@@ -35,7 +38,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
 
 
     @Test
-    public void httpTaskManagerTest() throws IOException, InterruptedException {
+    public void httpTaskManagerTest() {
 
         boolean answer1 = taskManager.getTasks().isEmpty();
         Assertions.assertEquals(true, answer1, "Список не пуст");
@@ -45,25 +48,25 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
         Assertions.assertEquals(true, answer3, "Список не пуст");
 
         taskManager.addTask(new Task("Задача", "Для проверки", Status.NEW,
-                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 30));
+                LocalDateTime.of(2023, Month.JANUARY,01,12,00), 10));
         taskManager.getTask(1);
         boolean answer4 = taskManager.getTasks().isEmpty();
         Assertions.assertEquals(false, answer4, "Список пуст");
 
         taskManager.addEpic(new Epic("Эпик", "Для проверки"));
         taskManager.addSubTask(new SubTask("Подзадача", "Для проверки", Status.NEW,
-                LocalDateTime.of(2023, Month.JANUARY,6,20,00), 30, 2));
+                LocalDateTime.of(2023, Month.JANUARY,6,20,00), 00, 2));
         taskManager.getSubTask(3);
         boolean answer6 = taskManager.getSubTasks().isEmpty();
         Assertions.assertEquals(false, answer6, "Список пуст");
 
-        HttpTaskManager httpTasksManager = taskManager.load();
+        HttpTaskManager httpTasksManager = new HttpTaskManager(uri, true);
 
         Assertions.assertEquals(taskManager.getTasks(),
                 httpTasksManager.getTasks(), "Список задач после выгрузки не совпададает");
 
-        Assertions.assertEquals(taskManager.getEpics(),
-                httpTasksManager.getEpics(), "Список эпиков после выгрузки не совпададает");
+        Assertions.assertEquals(taskManager.getEpics().toString(),
+                httpTasksManager.getEpics().toString(), "Список эпиков после выгрузки не совпададает");
 
         Assertions.assertEquals(taskManager.getSubTasks(),
                 httpTasksManager.getSubTasks(), "Список подзадач после выгрузки не совпададает");
