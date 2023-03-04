@@ -39,7 +39,6 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
 
     @Test
     public void httpTaskManagerTest() {
-
         boolean answer1 = taskManager.getTasks().isEmpty();
         Assertions.assertEquals(true, answer1, "Список не пуст");
         boolean answer2 = taskManager.getEpics().isEmpty();
