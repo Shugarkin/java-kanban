@@ -1,4 +1,4 @@
-package servers;
+package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -12,7 +12,6 @@ import service.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -21,14 +20,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private Gson gson;
-    private HttpServer httpServer;
-    private TaskManager taskManager;
+    private static Gson gson = Managers.getGson();
+    private final HttpServer httpServer;
+    private final TaskManager taskManager;
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
-        gson = Managers.getGson();
         httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TasksHandler());
     }
@@ -64,7 +61,7 @@ public class HttpTaskServer {
                                     System.out.println("Задача " + id + " удаленна");
                                 } else {
                                     System.out.println("Неверный id -" + id);
-                                    httpExchange.sendResponseHeaders(405, 0);
+                                    httpExchange.sendResponseHeaders(404, 0);
                                 }
                             }
                         } else if (Pattern.matches("^/tasks/epic/$", path)) {
@@ -81,7 +78,7 @@ public class HttpTaskServer {
                                      System.out.println("Эпик " + id + " удаленна");
                                  } else {
                                      System.out.println("Неверный id -" + id);
-                                     httpExchange.sendResponseHeaders(405, 0);
+                                     httpExchange.sendResponseHeaders(404, 0);
                                  }
                              }
                         } else if (Pattern.matches("^/tasks/subtask/$", path)) {
@@ -98,13 +95,13 @@ public class HttpTaskServer {
                                     System.out.println("Подзадача " + id + " удаленна");
                                 } else {
                                     System.out.println("Неверный id -" + id);
-                                    httpExchange.sendResponseHeaders(405, 0);
+                                    httpExchange.sendResponseHeaders(404, 0);
                                 }
                             }
                         } else {
                             System.out.println("Ошибка пути удаления задачи");
                             httpExchange.sendResponseHeaders(405, 0);
-                                }
+                        }
                         break;
                     case "GET":
                         if (Pattern.matches("^/tasks/task/$", path)) {
@@ -123,7 +120,7 @@ public class HttpTaskServer {
                                     System.out.println("Задача " + id + " получена");
                                 } else {
                                     System.out.println("Неверный id -" + id);
-                                    httpExchange.sendResponseHeaders(405, 0);
+                                    httpExchange.sendResponseHeaders(404, 0);
                                 }
                             }
                         } else if (Pattern.matches("^/tasks/epic/$", path)) {
@@ -142,7 +139,7 @@ public class HttpTaskServer {
                                     System.out.println("Эпик " + id + " получен");
                                 } else {
                                     System.out.println("Неверный id -" + id);
-                                    httpExchange.sendResponseHeaders(405, 0);
+                                    httpExchange.sendResponseHeaders(404, 0);
                                 }
                             }
                         } else if (Pattern.matches("^/tasks/subtask/$", path)) {
@@ -161,7 +158,7 @@ public class HttpTaskServer {
                                     System.out.println("Подзадача " + id + " получена");
                                 } else {
                                     System.out.println("Неверный id -" + id);
-                                    httpExchange.sendResponseHeaders(405, 0);
+                                    httpExchange.sendResponseHeaders(404, 0);
                                 }
                             }
                         } else if (Pattern.matches("^/tasks/subtask/epic/$", path)) {
@@ -174,7 +171,7 @@ public class HttpTaskServer {
                                 System.out.println("Подзадачи эпика " + id + " получены");
                             } else {
                                 System.out.println("Неверный id -" + id);
-                                httpExchange.sendResponseHeaders(405, 0);
+                                httpExchange.sendResponseHeaders(404, 0);
                             }
                         } else if (Pattern.matches("^/tasks/history$", path)) {
                             String answer = gson.toJson(taskManager.getHistory());
@@ -188,13 +185,13 @@ public class HttpTaskServer {
                             httpExchange.sendResponseHeaders(200, 0);
                         } else {
                             System.out.println("Ошибка пути получения задачи");
-                            httpExchange.sendResponseHeaders(405, 0);
+                            httpExchange.sendResponseHeaders(404, 0);
                         }
                         break;
                     case "POST":
                         if (Pattern.matches("^/tasks/task/", path)) {
                             String taskString = readText(httpExchange);
-                            if(taskString == null) {
+                            if(taskString.isEmpty()) {
                                 httpExchange.sendResponseHeaders(400, 0);
                                 return;
                             }
@@ -210,7 +207,7 @@ public class HttpTaskServer {
                             }
                         } else if (Pattern.matches("^/tasks/epic/", path)) {
                             String epicString = readText(httpExchange);
-                            if(epicString == null) {
+                            if(epicString.isEmpty()) {
                                 httpExchange.sendResponseHeaders(400, 0);
                                 return;
                             }
@@ -227,7 +224,7 @@ public class HttpTaskServer {
                             }
                         } else if (Pattern.matches("^/tasks/subtask/", path)) {
                             String subtaskString = readText(httpExchange);
-                            if (subtaskString == null) {
+                            if (subtaskString.isEmpty()) {
                                 httpExchange.sendResponseHeaders(400, 0);
                                 return;
                             }

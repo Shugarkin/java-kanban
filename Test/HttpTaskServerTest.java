@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.HttpTaskManager;
-import servers.HttpTaskServer;
-import servers.KVServer;
+import server.HttpTaskServer;
+import server.KVServer;
 import service.Managers;
 
 import java.io.IOException;

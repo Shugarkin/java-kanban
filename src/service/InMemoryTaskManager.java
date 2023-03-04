@@ -157,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new NullPointerException("Задачи с таким id нет");
         }
         SubTask subTask = subTasks.get(id);
-        epics.get(subTask.getEpicId()).getSubtaskId().remove((Integer) subTask.getId());
+        epics.get(subTask.getEpicId()).getSubtaskId().remove( subTask.getId());
         prioritizedTasks.remove(subTasks.get(id));
         subTasks.remove(id);
         historyManager.remove(id);
@@ -257,7 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
                 if (!o.getStartTime().isBefore(task.getEndTime())) {
                     continue;
                 }
-                if (task.getId() == o.getId()) {
+                if (Objects.equals(task.getId(), o.getId())) {
                     continue;
                 }
                 throw new IllegalArgumentException ("Нельзя создать пересекающиеся задачи");

@@ -9,8 +9,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-    private URI uri;
-    private String token;
+    private final URI uri;
+    private final String token;
 
     public KVTaskClient(URI uri) {
         this.uri = uri;
@@ -28,6 +28,9 @@ public class KVTaskClient {
         HttpResponse<String> response;
         try {
             response = client.send(request, handler);
+            if ((response.statusCode() != 200)) {
+                throw new ManagerSaveException("Ошибка");
+            }
         } catch (IOException | InterruptedException e) {
             throw new ManagerSaveException("Ошибка");
         }

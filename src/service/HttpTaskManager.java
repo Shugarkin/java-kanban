@@ -2,6 +2,7 @@ package service;
 
 import client.KVTaskClient;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -10,22 +11,20 @@ import model.Tasks;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class HttpTaskManager extends FileBackedTasksManager {
-    private URI uri;
-    private KVTaskClient taskClient;
-    private Gson gson = new Gson();
+    private final URI uri;
+    private final KVTaskClient taskClient;
+    private final static Gson gson = new Gson();
 
     public HttpTaskManager(URI uri) {
         this(uri, false);
-        this.taskClient = new KVTaskClient(uri);
     }
 
     public HttpTaskManager(URI uri, boolean answer) {
         this.uri = uri;
         this.taskClient = new KVTaskClient(uri);
-        if (answer == true) {
+        if (answer) {
             load();
         }
 
@@ -33,53 +32,59 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     protected void save() { //переопределенный метод для сохранения данных на сервере
-        List<String> stringBuilder = new ArrayList<>();
-        for (Task task : getTasks()) {
-            stringBuilder.add(gson.toJson(task));
-        }
-        for (Epic epic : getEpics()) {
-            stringBuilder.add(gson.toJson(epic));
-        }
-        for (SubTask subTask : getSubTasks()) {
-            stringBuilder.add(gson.toJson(subTask));
-        }
+
+        String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
+        taskClient.put("tasks", jsonTasks);
+
+        String jsonEpics = gson.toJson(new ArrayList<>(epics.values()));
+        taskClient.put("epics", jsonEpics);
+
+        String jsonSubtask = gson.toJson(new ArrayList<>(subTasks.values()));
+        taskClient.put("subtasks", jsonSubtask);
 
         List<Tasks> history = historyManager.getHistory();
+        StringBuilder sb = new StringBuilder();
         if (!history.isEmpty()) {
-            stringBuilder.add(String.valueOf(history.get(0).getId()));
+            sb.append(history.get(0).getId());
         }
         for (int i = 1; i < history.size(); i++) {
-            stringBuilder.add(String.valueOf(history.get(i).getId()));
+            sb.append(",").append(history.get(i).getId());
         }
-
-        String allTasks = stringBuilder.toString();
-
-        taskClient.put(String.valueOf(100), allTasks);
+        String jsonHistory = gson.toJson(sb);
+        taskClient.put("history", jsonHistory);
     }
 
     private HttpTaskManager load() {//метод для выгрузки с сервера
         HttpTaskManager httpTaskManager = Managers.getDefault(uri);
-        String tasksAndHistory = taskClient.load(String.valueOf(100));
-        String[] split = tasksAndHistory.split(Pattern.quote(", "));
-        split[0] = split[0].replaceFirst(Pattern.quote("["), "");
-        int answer = split.length - 1;
-        split[answer] = split[answer].replaceFirst("]", "");
-        for (String line : split) {
 
-                if(line.contains("Task")) {
-                    Task task = gson.fromJson(line, Task.class);
-                    addTask(task);
-                } else if (line.contains("Epic")) {
-                    Epic epic = gson.fromJson(line, Epic.class);
-                    addEpic(epic);
-                } else if (line.contains("Subtask")) {
-                    SubTask subTask = gson.fromJson(line, SubTask.class);
-                    addSubTask(subTask);
-                }     else {
-            String[] history = line.split("");
-            fileToHistory(history);
-            }
+        ArrayList<Task> task = gson.fromJson(taskClient.load("tasks"), new TypeToken<ArrayList<Task>>() {
+        }.getType());
+        for (Task newTask : task) {
+            tasks.put(newTask.getId(), newTask);
+            prioritizedTasks.add(newTask);
+            nextId++;
         }
+        ArrayList<Epic> epic = gson.fromJson(taskClient.load("epics"), new TypeToken<ArrayList<Epic>>() {
+        }.getType());
+
+        for (Epic newEpic : epic) {
+            epics.put(newEpic.getId(), newEpic);
+            nextId++;
+        }
+
+        ArrayList<SubTask> subtask = gson.fromJson(taskClient.load("subtasks"), new TypeToken<ArrayList<SubTask>>() {
+        }.getType());
+
+        for (SubTask newSubtask : subtask) {
+            subTasks.put(newSubtask.getId(), newSubtask);
+            prioritizedTasks.add(newSubtask);
+            nextId++;
+        }
+        String history = gson.fromJson(taskClient.load("history"), new TypeToken<String>() {
+        }.getType());
+        String[] split = history.split(",");
+        fileToHistory(split);
+
         return httpTaskManager;
     }
 }

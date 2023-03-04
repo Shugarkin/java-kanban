@@ -5,8 +5,6 @@ import java.util.Objects;
 
 public class Task extends Tasks {
 
-
-
     private String name = "Task";
 
     public Task(Integer id, String title, String description, Status status) {

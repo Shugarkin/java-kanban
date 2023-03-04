@@ -3,8 +3,8 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.*;
-import servers.HttpTaskServer;
-import servers.KVServer;
+import server.HttpTaskServer;
+import server.KVServer;
 import service.*;
 
 import java.io.IOException;
@@ -65,14 +65,19 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
         Assertions.assertEquals(taskManager.getTasks(),
                 httpTasksManager.getTasks(), "Список задач после выгрузки не совпададает");
 
-        Assertions.assertEquals(taskManager.getEpics().toString(),
-                httpTasksManager.getEpics().toString(), "Список эпиков после выгрузки не совпададает");
+        Assertions.assertEquals(taskManager.getEpics(),
+                httpTasksManager.getEpics(), "Список эпиков после выгрузки не совпададает");
 
         Assertions.assertEquals(taskManager.getSubTasks(),
                 httpTasksManager.getSubTasks(), "Список подзадач после выгрузки не совпададает");
 
         Assertions.assertEquals(taskManager.getPrioritizedTasks().toString(),
                 httpTasksManager.getPrioritizedTasks().toString(), "Отсортированный список не совпадает");
+
+        String a = taskManager.getHistory().toString();
+        String b = httpTasksManager.getHistory().toString();
+
+
 
         Assertions.assertEquals(taskManager.getHistory(), httpTasksManager.getHistory(), "Список истории не совпадает");
 
