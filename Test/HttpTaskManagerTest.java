@@ -74,11 +74,6 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>  {
         Assertions.assertEquals(taskManager.getPrioritizedTasks().toString(),
                 httpTasksManager.getPrioritizedTasks().toString(), "Отсортированный список не совпадает");
 
-        String a = taskManager.getHistory().toString();
-        String b = httpTasksManager.getHistory().toString();
-
-
-
         Assertions.assertEquals(taskManager.getHistory(), httpTasksManager.getHistory(), "Список истории не совпадает");
 
         Assertions.assertEquals(taskManager.getNextId(),
