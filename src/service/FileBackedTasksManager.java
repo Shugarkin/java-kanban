@@ -98,7 +98,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     protected void fileToHistory (String[] history) { //метод берет из листа с истории файла и добавляяет в обычную
         for (String s : history) {
-            int key = Integer.valueOf(s);
+            int key = Integer.parseInt(s);
             if (tasks.containsKey(key)) {
                 historyManager.add(tasks.get(key));
             }

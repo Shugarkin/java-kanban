@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    private static Gson gson = Managers.getGson();
+    private static final Gson gson = Managers.getGson();
     private final HttpServer httpServer;
     private final TaskManager taskManager;
 

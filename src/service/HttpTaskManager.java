@@ -62,14 +62,14 @@ public class HttpTaskManager extends FileBackedTasksManager {
         for (Task newTask : task) {
             tasks.put(newTask.getId(), newTask);
             prioritizedTasks.add(newTask);
-            nextId++;
+            findNextId();
         }
         ArrayList<Epic> epic = gson.fromJson(taskClient.load("epics"), new TypeToken<ArrayList<Epic>>() {
         }.getType());
 
         for (Epic newEpic : epic) {
             epics.put(newEpic.getId(), newEpic);
-            nextId++;
+            findNextId();
         }
 
         ArrayList<SubTask> subtask = gson.fromJson(taskClient.load("subtasks"), new TypeToken<ArrayList<SubTask>>() {
@@ -78,7 +78,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         for (SubTask newSubtask : subtask) {
             subTasks.put(newSubtask.getId(), newSubtask);
             prioritizedTasks.add(newSubtask);
-            nextId++;
+            findNextId();
         }
         String history = gson.fromJson(taskClient.load("history"), new TypeToken<String>() {
         }.getType());
@@ -87,4 +87,26 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
         return httpTaskManager;
     }
+
+    private void findNextId() {
+        for (Task value : tasks.values()) {
+            if(value.getId() > nextId) {
+                nextId = value.getId();
+            }
+        }
+
+        for (Epic value : epics.values()) {
+            if(value.getId() > nextId) {
+                nextId = value.getId();
+            }
+        }
+
+        for (SubTask value : subTasks.values()) {
+            if(value.getId() > nextId) {
+                nextId = value.getId();
+            }
+        }
+        nextId = nextId + 1;
+    }
+
 }
